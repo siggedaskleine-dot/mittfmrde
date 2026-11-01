@@ -1,0 +1,50 @@
+<UserControl x:Class="MittFmrte.App.Views.SigningsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Background="{StaticResource PanelBg}" Padding="12,10">
+            <WrapPanel>
+                <StackPanel Margin="0,0,16,0">
+                    <TextBlock Text="Position" Foreground="{StaticResource TextDim}" Margin="0,0,0,3" />
+                    <ComboBox x:Name="PositionPicker" Width="190" DisplayMemberPath="Name" SelectedValuePath="Position" />
+                </StackPanel>
+                <StackPanel Margin="0,0,16,0">
+                    <TextBlock Text="Max ålder" Foreground="{StaticResource TextDim}" Margin="0,0,0,3" />
+                    <TextBox x:Name="MaxAge" Width="60" Text="30" />
+                </StackPanel>
+                <StackPanel Margin="0,0,16,0">
+                    <TextBlock Text="Transferbudget (€)" Foreground="{StaticResource TextDim}" Margin="0,0,0,3" />
+                    <TextBox x:Name="Budget" Width="130" ToolTip="Budgeten läses inte från sparfilen än. Skriv in din budget från spelet." />
+                </StackPanel>
+                <StackPanel Margin="0,0,16,0" VerticalAlignment="Bottom">
+                    <CheckBox x:Name="OnlyUpgrades" Content="Bara spelare bättre än min bästa" IsChecked="True" Margin="0,0,0,5" />
+                </StackPanel>
+                <Button Style="{StaticResource AccentButton}" Content="Hitta spelare" Click="Search_Click" VerticalAlignment="Bottom" Margin="0" />
+            </WrapPanel>
+        </Border>
+
+        <TextBlock x:Name="Summary" Grid.Row="1" Margin="2,8" TextWrapping="Wrap" Foreground="{StaticResource TextDim}"
+                   Text="Välj position och klicka på Hitta spelare. Sökningen tittar på positionens nyckelattribut, inte bara CA, och tar bort spelare som är för kända för din klubb eller för dyra." />
+
+        <DataGrid x:Name="Results" Grid.Row="2" MouseDoubleClick="Results_MouseDoubleClick">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Betyg" Binding="{Binding PositionScore, StringFormat={}{0:0}}" Width="55" />
+                <DataGridTextColumn Header="+/-" Binding="{Binding Upgrade, StringFormat={}{0:+0;-0;0}}" Width="45" />
+                <DataGridTextColumn Header="Namn" Binding="{Binding Player.FullName}" Width="1.6*" />
+                <DataGridTextColumn Header="Ålder" Binding="{Binding Age}" Width="50" />
+                <DataGridTextColumn Header="Klubb" Binding="{Binding CurrentClub.Name}" Width="1.4*" />
+                <DataGridTextColumn Header="Positioner" Binding="{Binding Player.PositionText}" Width="1.2*" />
+                <DataGridTextColumn Header="CA" Binding="{Binding Player.CurrentAbility}" Width="45" />
+                <DataGridTextColumn Header="PA" Binding="{Binding Player.PotentialAbility}" Width="45" />
+                <DataGridTextColumn Header="Värde" Binding="{Binding Player.Value, Converter={StaticResource Money}}" Width="75" SortMemberPath="Player.Value" />
+                <DataGridTextColumn Header="Varför" Binding="{Binding ReasonText}" Width="3*" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,133 @@
+<UserControl x:Class="MittFmrte.App.Views.PlayerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <!-- One attribute row: name on the left, editable 1-20 value on the right. -->
+        <DataTemplate x:Key="AttrRow">
+            <DockPanel Margin="0,1">
+                <TextBox DockPanel.Dock="Right" Width="38" HorizontalContentAlignment="Center" FontWeight="SemiBold"
+                         Text="{Binding Attr.Value, UpdateSourceTrigger=LostFocus}"
+                         Foreground="{Binding Attr.Value, Converter={StaticResource AttrColor}}"
+                         Background="Transparent" BorderThickness="0" />
+                <TextBlock Text="{Binding Attr.Name}" VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{StaticResource Text}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsKey}" Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource Accent}" />
+                                    <Setter Property="FontWeight" Value="SemiBold" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </DockPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid>
+        <TextBlock x:Name="Empty" Text="Ingen spelare vald. Sök efter en spelare eller dubbelklicka i truppen."
+                   HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource TextDim}" />
+
+        <Grid x:Name="Body" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="230" />
+            </Grid.ColumnDefinitions>
+
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.2*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Column 1: information -->
+                    <StackPanel Grid.Column="0">
+                        <HeaderedContentControl Header="Information" Style="{StaticResource Panel}">
+                            <Grid x:Name="InfoGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                            </Grid>
+                        </HeaderedContentControl>
+                        <HeaderedContentControl Header="Förmåga" Style="{StaticResource Panel}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="60" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition /><RowDefinition /><RowDefinition />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="CA (nuvarande)" VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1" Text="{Binding CurrentAbility, UpdateSourceTrigger=LostFocus}" Margin="0,1" HorizontalContentAlignment="Center" />
+                                <TextBlock Grid.Row="1" Text="PA (potential)" VerticalAlignment="Center" />
+                                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding PotentialAbility, UpdateSourceTrigger=LostFocus}" Margin="0,1" HorizontalContentAlignment="Center" />
+                                <TextBlock Grid.Row="2" Text="Rykte" VerticalAlignment="Center" />
+                                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Reputation, UpdateSourceTrigger=LostFocus}" Margin="0,1" HorizontalContentAlignment="Center" />
+                            </Grid>
+                        </HeaderedContentControl>
+                        <HeaderedContentControl Header="Positioner (1-20)" Style="{StaticResource Panel}">
+                            <ItemsControl x:Name="PositionList">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <DockPanel Margin="0,1">
+                                            <TextBlock DockPanel.Dock="Right" Text="{Binding Rating}" FontWeight="SemiBold"
+                                                       Foreground="{Binding Rating, Converter={StaticResource AttrColor}}" />
+                                            <TextBlock Text="{Binding Name}" />
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </HeaderedContentControl>
+                    </StackPanel>
+
+                    <HeaderedContentControl Grid.Column="1" Header="Tekniska" Style="{StaticResource Panel}" VerticalAlignment="Top">
+                        <ItemsControl x:Name="TechnicalList" ItemTemplate="{StaticResource AttrRow}" />
+                    </HeaderedContentControl>
+                    <HeaderedContentControl Grid.Column="2" Header="Mentala" Style="{StaticResource Panel}" VerticalAlignment="Top">
+                        <ItemsControl x:Name="MentalList" ItemTemplate="{StaticResource AttrRow}" />
+                    </HeaderedContentControl>
+                    <StackPanel Grid.Column="3">
+                        <HeaderedContentControl Header="Fysiska" Style="{StaticResource Panel}">
+                            <ItemsControl x:Name="PhysicalList" ItemTemplate="{StaticResource AttrRow}" />
+                        </HeaderedContentControl>
+                        <HeaderedContentControl Header="Målvakt" Style="{StaticResource Panel}">
+                            <ItemsControl x:Name="GoalkeepingList" ItemTemplate="{StaticResource AttrRow}" />
+                        </HeaderedContentControl>
+                        <HeaderedContentControl Header="Fötter och dolda" Style="{StaticResource Panel}">
+                            <ItemsControl x:Name="HiddenList" ItemTemplate="{StaticResource AttrRow}" />
+                        </HeaderedContentControl>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+
+            <StackPanel Grid.Column="1">
+                <HeaderedContentControl Header="Passar positionen" Style="{StaticResource Panel}" Margin="0,0,0,8">
+                    <StackPanel>
+                        <TextBlock x:Name="FitScore" FontSize="26" FontWeight="Bold" />
+                        <TextBlock x:Name="FitText" TextWrapping="Wrap" Foreground="{StaticResource TextDim}" />
+                    </StackPanel>
+                </HeaderedContentControl>
+                <HeaderedContentControl Header="Presets" Style="{StaticResource Panel}" Margin="0,0,0,8">
+                    <ItemsControl x:Name="PresetButtons">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Content="{Binding Name}" ToolTip="{Binding Description}" Click="Preset_Click" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </HeaderedContentControl>
+                <HeaderedContentControl Header="Orangea attribut" Style="{StaticResource Panel}" Margin="0">
+                    <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextDim}"
+                               Text="De orangea attributen är de viktigaste för spelarens bästa position. Klicka på en siffra för att ändra den." />
+                </HeaderedContentControl>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>
